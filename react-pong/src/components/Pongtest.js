@@ -1,42 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
-//Components
-import Score from './Score';
-import Field from './Field';
+import Score from "./Score";
+import Field from "./Field";
 
+const ball = require("../utils/ball");
 const Pong = () => {
+  const [ctx, setCtx] = useState(null);
+  const canvas = useRef(null);
+  const [toto, setToto] = useState({scorej1: 0,scorej2: 0,})
+	const [score, setScore] = useState(0);
+	var i = 1;
 
-	const[ctx, setCtx] = useState(null)
-	const canvas = useRef(null);
-	const [scorej1, setJ1] = useState(0)
-
-	useEffect(() => {
-		setCtx(canvas.current.getContext('2d'))
-	 }, [ctx])
-
-	const j1scored = () => {
-		setJ1(scorej1 + 1);
+	const blabla = () => {
+		setScore(score+1);
 	}
 
-	console.count('render')
-	console.log('score j1 = ' + scorej1);
-	return (
-	<div>
-		<div id='scorej1'>{scorej1}</div>
-		<canvas ref = {canvas}
-			width={600}
-			height={400}>
+  useEffect(() => {
+		setCtx(canvas.current.getContext('2d'))
+  }, [ctx]);
 
-			<Score />
-			{canvas.current&&<Field
+	useEffect(() => {
+		document.getElementById('scorej1').innerText=score;
+	}, [score])
+
+	if (ctx && i-- > 0)
+		ball.animate(300, 200, 1, 1, 10, 600, 400, blabla)
+
+
+	console.count('render');
+  return (
+    <div>
+      <div id="scorej1">
+        {/* <Score /> */}
+      </div>
+      <canvas id="canvas" ref={canvas} width={600} height={400}>
+        {/*{canvas.current&&<Field
 			ctx={canvas.current.getContext('2d')}
 			width={canvas.current.width}
 			height={canvas.current.height}
 			j1scored={j1scored}
-			/>}
-		</canvas>
-	</div>
-	);
+			/>}*/}
+      </canvas>
+    </div>
+  );
 };
 
 export default Pong;
