@@ -13,10 +13,15 @@ code {
 }
 
 
-canvas {
+#pong {
   margin-left:50px;
   margin-top:50px;
-  /*width: 50vw;
-  height: 50vh; */
+  width:60vw;
+  height:40vh;
   border: 1px solid black;
+}
+
+#canvas {
+  width:100%;
+  height:100%;
 }

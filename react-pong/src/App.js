@@ -1,5 +1,5 @@
 import React from 'react';
-import Pong from './components/Pong';
+import Pong from './components/Pongtest';
 
 const App = () => {
   return (

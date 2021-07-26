@@ -1,8 +1,8 @@
 const drawPlayer = require("../utils/player");
 
 function animate(gd) {
+  if (gd.ballx + gd.radius >= gd.width || gd.ballx - gd.radius <= 0) {gd.dx *= -1; gd.direction *=-1;/*console.log('merde, leaving');gd.setScore();return;*/}
   gd.ctx.clearRect(0, 0, gd.width, gd.height);
-  if (gd.ballx + gd.radius >= gd.width || gd.ballx - gd.radius <= 0) {gd.dx *= -1;/*toto(); return;*/}
   if (gd.bally + gd.radius >= gd.height || gd.bally - gd.radius <= 0) gd.dy *= -1;
   gd.ballx += gd.dx;
   gd.bally += gd.dy;
@@ -25,14 +25,6 @@ function animate(gd) {
   gd.ctx.strokeStyle = "grey";
   gd.ctx.stroke();
   gd.ctx.closePath();
-		// draw player2();
-
-  /*if (bord_touché)
-			{
-				return (
-
-				)
-			}*/
   requestAnimationFrame(() => {
     animate(gd);
   });
