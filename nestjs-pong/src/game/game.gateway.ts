@@ -1,5 +1,6 @@
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+const io = require("../../node_modules/socket.io")
 import { Logger } from '@nestjs/common';
 
 @WebSocketGateway(3001)
@@ -13,19 +14,24 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('gameToServer')
   handleMessage(client: Socket,
     message: {
-      upArrow: boolean,
-      downArrow: boolean,
       ballx: number,
       bally: number,
       speed: number,
       balldx: number,
       balldy: number,
+      posRack1: number,
+      posRack2: number,
     })  {
     client.broadcast.emit('gameToClient', message);
   }
 
-
-
+  // @SubscribeMessage('isInGame')
+  // handleIsInGame(client: Socket) {
+  //   Socket.username = 'test';
+  //     return true;
+  //   else
+  //     return false;
+  // }
 
   afterInit(server: any) {
     this.logger.log('Initialized!');

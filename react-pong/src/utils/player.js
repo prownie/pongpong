@@ -1,35 +1,22 @@
 function drawPlayer(gd) {
+	if (gd.ready === false) {
+		document.onkeydown = (e) => {
+			gd.ready = true;
+		}
+		return;
+	}	gd.ctx.globalAlpha = 1;
 	document.onkeydown = (e) => {
 		if (e.code === "ArrowUp") {
 				if(gd.goup === true)
 					return;
 				gd.goup = true;
-				console.log('here1');
-				gd.socket.emit('test', "hello");
-				gd.socket.emit('gameToServer', {
-					upArrow: gd.goup,
-     			downArrow: gd.godown,
-     			ballx: gd.ballx,
-     			bally: gd.bally,
-     			speed: gd.speed,
-     			balldx: gd.dx,
-     			balldy: gd.dy,
-				})
+				sendDataToServ(gd);
 		}
 		else if (e.code === "ArrowDown") {
 			if(gd.godown === true)
 					return;
 			 gd.godown = true;
-			 console.log('here2');
-			 gd.socket.emit('gameToServer', {
-				upArrow: gd.goup,
-				 downArrow: gd.godown,
-				 ballx: gd.ballx,
-				 bally: gd.bally,
-				 speed: gd.speed,
-				 balldx: gd.dx,
-				 balldy: gd.dy,
-			})
+			 sendDataToServ(gd);
 		}
 	}
 	document.onkeyup = (e) => {
@@ -37,35 +24,17 @@ function drawPlayer(gd) {
 			if(gd.goup === false)
 					return;
 				gd.goup = false;
-				console.log('here3');
-				gd.socket.emit('gameToServer', {
-					upArrow: gd.goup,
-     			downArrow: gd.godown,
-     			ballx: gd.ballx,
-     			bally: gd.bally,
-     			speed: gd.speed,
-     			balldx: gd.dx,
-     			balldy: gd.dy,
-				})
+				sendDataToServ(gd);
 		}
 		else if (e.code === "ArrowDown") {
 			if(gd.godown === false)
 					return;
 			 gd.godown = false;
-			 console.log('here4');
-			 gd.socket.emit('gameToServer', {
-				upArrow: gd.goup,
-				 downArrow: gd.godown,
-				 ballx: gd.ballx,
-				 bally: gd.bally,
-				 speed: gd.speed,
-				 balldx: gd.dx,
-				 balldy: gd.dy,
-			})
+			 sendDataToServ(gd);
 		}
 	}
-	if (gd.goup) gd.posRack1 -=5; if (gd.posRack1 < 0) gd.posRack1 = 0;
-	if (gd.godown) gd.posRack1 += 5; if (gd.posRack1 + gd.rackHeight >= gd.height) gd.posRack1 = gd.height-gd.rackHeight
+	if (gd.goup) gd.posRack1 -= 0.8 * gd.vh; if (gd.posRack1 < 0) gd.posRack1 = 0;
+	if (gd.godown) gd.posRack1 += 0.8 * gd.vh; if (gd.posRack1 + gd.rackHeight >= gd.height) gd.posRack1 = gd.height-gd.rackHeight
 	gd.ctx.beginPath();
 	var grad1 = gd.ctx.createLinearGradient(0, gd.posRack1, gd.rackWidth, gd.posRack1 + gd.rackHeight);
   grad1.addColorStop(0, 'blue');
@@ -127,11 +96,26 @@ function checkCollision (gd) {
 		gd.direction *= -1;
   	gd.dx = gd.direction * gd.speed * Math.cos(angleRad);
   	gd.dy = gd.speed * Math.sin(angleRad);
-		if (gd.speed <= 7.0)
-			gd.speed += 0.5;
+		if (gd.speed <= 2.0 * gd.vw)
+			gd.speed += 0;
+			sendDataToServ(gd);
 	}
 
 	//Check where the ball hits the paddle
 
 }
+
+const sendDataToServ = (gd) => {
+	gd.socket.emit('gameToServer', {
+		upArrow: gd.goup,
+		downArrow: gd.godown,
+		ballx: gd.ballx,
+		bally: gd.bally,
+		speed: gd.speed,
+		balldx: gd.dx,
+		balldy: gd.dy,
+		posRack1: gd.posRack1,
+		posRack2: gd.posRack2,
+	});
+};
 module.exports = { drawPlayer };

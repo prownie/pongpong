@@ -1,17 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
+// import { io } from "socket.io-client";
+import { socket } from "../App";
 
-import Score from "./Score";
-import Field from "./Field";
+//import Score from "./Score";
+// import Field from "./Field";
 
 const ball = require("../utils/ball");
 
 const Pong = () => {
-  const [ctx, setCtx] = useState(null);
-  const canvas = useRef(null);
-  
+	const canvas = useRef(null);
+	const [width, setWidth] = useState(window.innerWidth);
+	const [height, setHeight] = useState(window.innerHeight);
 	const [score, setScore] = useState(0);
+	const [isInGame, setInGame] = useState(false);
 	const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) /100;
 	const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) /100;
+	const canvasHeight = 40 * vh;
+	const canvasWidth = 60 * vw;
+	const [isReady, setIsReady] = useState(false);
+	window.addEventListener("resize", () => {setWidth(window.innerWidth); setHeight(window.innerHeight)});
 
 	const blabla = () => {
 		setScore(score+1);
@@ -19,54 +26,83 @@ const Pong = () => {
 
 	useEffect(() => {
 		document.getElementById('scorej1').innerText=score;
-	})
-
-  useEffect(() => {
-		setCtx(canvas.current.getContext('2d'))
-  }, [ctx]);
-
-	if (ctx) {
+		console.log('score changed');
+		// const socket= io('http://localhost:3001', {
+		// 	transports: ['websocket']
+		// });
 		var gameData = {
+			// username: prompt("Enter your username"),
 			direction: -1,
-			dx: 1.2,
-			dy: 1.0,
-			angleRad:
-			radius: 60 * window.innerWidth / 6000,
-			width: 60 * window.innerWidth / 100,
-			height: 40 * window.innerHeight / 100,
-			ballx: 60 * window.innerWidth / 200,
-			bally: 40 * window.innerHeight / 200,
-			posRack1: 40 * window.innerHeight / 100 * 0.4,
-			posRack2: 40 * window.innerHeight / 100 * 0.4,
-			rackWidth: 60 * window.innerWidth / 3000,
-			rackHeight:  40 * window.innerHeight / 500,
+			dx: 0,
+			dy: 0.00,
+			speed: -2,
+			test: 0,
+			vw: vw,
+			vh: vh,
+			radius: canvasWidth / 100,
+			width: canvasWidth,
+			height: canvasHeight,
+			ballx: canvasWidth / 2,
+			bally: canvasHeight / 2,
+			posRack1: canvasHeight / 2 - canvasHeight / 10,
+			posRack2: canvasHeight / 2 - canvasHeight / 10,
+			rackWidth: canvasWidth / 50,
+			rackHeight: canvasHeight / 5,
 			goup: false,
 			godown: false,
 			ctx: document.getElementById("canvas").getContext('2d'),
-			setScore : blabla
-		}
+			socket: socket,
+			setScore : blabla,
+			ready: isReady,
+		};
+		socket.on("gameToClient", (socket) => {
+			gameData.goup = socket.upArrow;
+			gameData.godown = socket.downArrow;
+			gameData.ballx = socket.ballx;
+			gameData.bally = socket.bally;
+			gameData.dx = socket.balldx;
+			gameData.dy = socket.balldy;
+			gameData.posRack1 = socket.posRack1;
+			gameData.posRack2 = socket.posRack2
+		});
+		// if (isReady)
 		ball.animate(gameData)
-	}
-
-
+		// else {
+		// 	console.log('in return 1');
+		// 	return () => {
+		// 		<div id="matchmaking">
+		// 			Waiting for opponent
+		// 		</div>
+		// 	}
+		// }
+	}, [score, height, width])
 
 	console.count('render');
+//   if (isInGame === false)
+//   {
+// 	return (
+// 		<div>
+// 			not in game
+// 		</div>
+// 	);
+//   }
+
   return (
     <div>
       <div id="scorej1">
         {/* <Score score={score}/> */}
       </div>
 			<div id="pong">
-     	 <canvas id="canvas" ref={canvas} width={60*vw} height={40*vh}>
-     	   {/*{canvas.current&&<Field
-				ctx={canvas.current.getContext('2d')}
-				width={canvas.current.width}
-				height={canvas.current.height}
-				j1scored={j1scored}
-				/>}*/}
-     	 </canvas>
+				<canvas id="canvas" ref={canvas} width={60*vw} height={40*vh}>
+					{/*{canvas.current&&<Field
+						ctx={canvas.current.getContext('2d')}
+						width={canvas.current.width}
+						height={canvas.current.height}
+						j1scored={j1scored}
+						/>}*/}
+				</canvas>
 			</div>
-    </div>
+	</div>
   );
 };
 
