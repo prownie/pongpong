@@ -1,18 +1,67 @@
 function drawPlayer(gd) {
 	document.onkeydown = (e) => {
 		if (e.code === "ArrowUp") {
+				if(gd.goup === true)
+					return;
 				gd.goup = true;
+				console.log('here1');
+				gd.socket.emit('test', "hello");
+				gd.socket.emit('gameToServer', {
+					upArrow: gd.goup,
+     			downArrow: gd.godown,
+     			ballx: gd.ballx,
+     			bally: gd.bally,
+     			speed: gd.speed,
+     			balldx: gd.dx,
+     			balldy: gd.dy,
+				})
 		}
 		else if (e.code === "ArrowDown") {
+			if(gd.godown === true)
+					return;
 			 gd.godown = true;
+			 console.log('here2');
+			 gd.socket.emit('gameToServer', {
+				upArrow: gd.goup,
+				 downArrow: gd.godown,
+				 ballx: gd.ballx,
+				 bally: gd.bally,
+				 speed: gd.speed,
+				 balldx: gd.dx,
+				 balldy: gd.dy,
+			})
 		}
 	}
 	document.onkeyup = (e) => {
 		if (e.code === "ArrowUp") {
+			if(gd.goup === false)
+					return;
 				gd.goup = false;
+				console.log('here3');
+				gd.socket.emit('gameToServer', {
+					upArrow: gd.goup,
+     			downArrow: gd.godown,
+     			ballx: gd.ballx,
+     			bally: gd.bally,
+     			speed: gd.speed,
+     			balldx: gd.dx,
+     			balldy: gd.dy,
+				})
 		}
 		else if (e.code === "ArrowDown") {
+			if(gd.godown === false)
+					return;
 			 gd.godown = false;
+			 console.log('here4');
+			 gd.socket.emit('gameToServer', {
+				upArrow: gd.goup,
+				 downArrow: gd.godown,
+				 ballx: gd.ballx,
+				 bally: gd.bally,
+				 speed: gd.speed,
+				 balldx: gd.dx,
+				 balldy: gd.dy,
+			})
 		}
 	}
 	if (gd.goup) gd.posRack1 -=5; if (gd.posRack1 < 0) gd.posRack1 = 0;
@@ -76,7 +125,6 @@ function checkCollision (gd) {
 		//now collide is almost between -1 and 1
 		let angleRad = (Math.PI/4) * collidePoint;
 		gd.direction *= -1;
-		console.log('with=',gd.width,'pleft=',p.left,'pright',p.right,'direction=',gd.direction,'bleft=',b.left,'bright=',b.right,'dx=',gd.dx,'nextdx=',gd.direction * gd.speed * Math.cos(angleRad))
   	gd.dx = gd.direction * gd.speed * Math.cos(angleRad);
   	gd.dy = gd.speed * Math.sin(angleRad);
 		if (gd.speed <= 7.0)

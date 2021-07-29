@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 
 //import Score from "./Score";
 import Field from "./Field";
@@ -13,12 +14,17 @@ const Pong = () => {
 	const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) /100;
 	const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) /100;
 	var i = 1;
+
 	const blabla = () => {
 		setScore(score+1);
 	}
+
 	useEffect(() => {
 		document.getElementById('scorej1').innerText=score;
 		console.log('score changed');
+		const socket= io('http://localhost:3001', {
+			transports: ['websocket']
+		});
 		var gameData = {
 			direction: -1,
 			dx: -2,
@@ -37,8 +43,19 @@ const Pong = () => {
 			goup: false,
 			godown: false,
 			ctx: document.getElementById("canvas").getContext('2d'),
-			setScore : blabla
-		}
+			socket: socket,
+			setScore : blabla,
+		};
+		socket.on("gameToClient", (socket) => {
+			gameData.goup = socket.upArrow;
+			gameData.godown = socket.downArrow;
+			gameData.ballx = socket.ballx;
+			gameData.bally = socket.bally;
+			gameData.dx = socket.balldx;
+			gameData.dy = socket.balldy;
+			console.log('in gameToClient');
+		});
+		console.log('socket: ',gameData.socket);
 		ball.animate(gameData)
 	}, [score])
 
