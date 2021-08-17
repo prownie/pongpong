@@ -11,6 +11,11 @@ export declare class GameGateway implements OnGatewayInit, OnGatewayConnection, 
         balldy: number;
         posRack1: number;
         posRack2: number;
+        username: string;
+    }): void;
+    handleStartMatchmaking(client: Socket, message: {
+        matchtype: string;
+        username: string;
     }): void;
     afterInit(server: any): void;
     handleDisconnect(client: Socket): void;

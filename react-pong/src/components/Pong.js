@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { socket } from "../App";
 
 //import Score from "./Score";
-// import Field from "./Field";
+//import Field from "./Field";
 
 const ball = require("../utils/ball");
 
@@ -12,12 +12,12 @@ const Pong = () => {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [height, setHeight] = useState(window.innerHeight);
 	const [score, setScore] = useState(0);
-	const [isInGame, setInGame] = useState(false);
+	// const [isInGame, setInGame] = useState(false);
 	const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) /100;
 	const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) /100;
 	const canvasHeight = 40 * vh;
 	const canvasWidth = 60 * vw;
-	const [isReady, setIsReady] = useState(false);
+	const [isReady/*, setIsReady*/] = useState(false);
 	window.addEventListener("resize", () => {setWidth(window.innerWidth); setHeight(window.innerHeight)});
 
 	const blabla = () => {
@@ -31,7 +31,7 @@ const Pong = () => {
 		// 	transports: ['websocket']
 		// });
 		var gameData = {
-			// username: prompt("Enter your username"),
+			username: prompt("Enter your username"),
 			direction: -1,
 			dx: 0,
 			dy: 0.00,
@@ -75,7 +75,7 @@ const Pong = () => {
 		// 		</div>
 		// 	}
 		// }
-	}, [score, height, width])
+	}, [score, height, width, canvasHeight, canvasWidth,vw,vh,isReady])
 
 	console.count('render');
 //   if (isInGame === false)

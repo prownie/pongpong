@@ -14,11 +14,17 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const io = require("../../node_modules/socket.io");
 const common_1 = require("@nestjs/common");
+const gameGateway_functions_1 = require("./gameGateway.functions");
 let GameGateway = class GameGateway {
     constructor() {
         this.logger = new common_1.Logger('GameGateway');
     }
     handleMessage(client, message) {
+        client.broadcast.emit('gameToClient', message);
+    }
+    handleStartMatchmaking(client, message) {
+        var roomid = gameGateway_functions_1.generateRoomId();
+        console.log('roomid on server:', roomid);
         client.broadcast.emit('gameToClient', message);
     }
     afterInit(server) {
@@ -41,6 +47,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], GameGateway.prototype, "handleMessage", null);
+__decorate([
+    websockets_1.SubscribeMessage('startMatchmaking'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", void 0)
+], GameGateway.prototype, "handleStartMatchmaking", null);
 GameGateway = __decorate([
     websockets_1.WebSocketGateway(3001)
 ], GameGateway);

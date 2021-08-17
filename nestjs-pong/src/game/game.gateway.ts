@@ -2,6 +2,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessa
 import { Socket, Server } from 'socket.io';
 const io = require("../../node_modules/socket.io")
 import { Logger } from '@nestjs/common';
+import { generateRoomId } from './gameGateway.functions';
 
 @WebSocketGateway(3001)
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -21,17 +22,21 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       balldy: number,
       posRack1: number,
       posRack2: number,
+      username: string,
     })  {
     client.broadcast.emit('gameToClient', message);
   }
 
-  // @SubscribeMessage('isInGame')
-  // handleIsInGame(client: Socket) {
-  //   Socket.username = 'test';
-  //     return true;
-  //   else
-  //     return false;
-  // }
+  @SubscribeMessage('startMatchmaking')
+  handleStartMatchmaking(client: Socket,
+    message: {
+      matchtype: string,
+      username: string,
+    })  {
+    var roomid = generateRoomId(/*io.sockets.adapter.rooms ? io.sockets.adapter.rooms : null*/);
+    console.log('roomid on server:',roomid);
+    client.broadcast.emit('gameToClient', message);
+  }
 
   afterInit(server: any) {
     this.logger.log('Initialized!');
@@ -43,6 +48,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`)
+    //client.data.username = "player"+
   }
 
 }

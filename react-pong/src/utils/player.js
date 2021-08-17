@@ -18,6 +18,9 @@ function drawPlayer(gd) {
 			 gd.godown = true;
 			 sendDataToServ(gd);
 		}
+		else if (e.code === "ArrowLeft") {
+			gd.socket.emit('dispUsername');
+		}
 	}
 	document.onkeyup = (e) => {
 		if (e.code === "ArrowUp") {
@@ -116,6 +119,7 @@ const sendDataToServ = (gd) => {
 		balldy: gd.dy,
 		posRack1: gd.posRack1,
 		posRack2: gd.posRack2,
+		username: gd.username,
 	});
 };
 module.exports = { drawPlayer };
