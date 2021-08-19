@@ -1,27 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { socket } from "../App";
+import Error from "./Error";
 
 const MatchMaking = (props) => {
-	const [username/*, setUsername*/] = useState("test");
-	const [opponent/*, setOpponent*/] = useState(null);
+	const [username, setUsername] = useState("test");
+	const [opponent, setOpponent] = useState(null);
+	const [opponentPic, setOpponentPic] = useState("https://toppng.com/uploads/preview/oint-interrogation-point-d-interrogation-115628635697ubaj1toa2.png");
+	const [queue, setQueue] = useState(false);
 
-	//to change with real username and real picture below
-	// useEffect(() => {
-	// 	if (!username)
-	// 		setUsername(prompt("enter username"))
-	// 	else {
-	// 		socket.emit('startMatchmaking', {
-	// 			matchtype: "ranked",
-	// 			username: username,
-	// 		});}
-	// }, [username])
-	// useEffect(() => {
-	// }, [opponent])
+
+	useEffect(() => {
+		if (['ranked','quickplay','footpong'].indexOf(props.match.params.matchtype) >= 0) {
+		if (!username)
+			setUsername(prompt("enter username"))
+		else {
+			socket.emit('startMatchmaking', {
+				matchtype: props.match.params.matchtype,
+				username: username,
+			});}}
+	}, [username, props.match.params.matchtype])
+
+	useEffect(() => {
+		if (opponent)
+				setOpponentPic("https://image.shutterstock.com/image-vector/found-grunge-rubber-stamp-on-260nw-197028626.jpg")
+	}, [opponent])
+
 	useEffect(() => {
 		console.log('socket.id=',socket.id);
-	}, [socket])
-	// socket.on('receiveOpponent')
-	console.count('render');
+	}, [])
+
+	socket.on("opponentFound", (socket) => {
+		setOpponent(socket.name);
+	});
+
+	socket.on("inQueue", (socket) => {
+		setQueue(true);
+	});
+	useEffect(() => {
+		if (queue)
+			console.log("Subscribed to queue");
+	}, [queue]);
+
+	if (['ranked','quickplay','footpong'].indexOf(props.match.params.matchtype) < 0) {
+		return (
+			<div id="Error">
+				<Error />
+			</div>
+		);}
 	return (
 		<div id="GameMenu">
 			<div id="profile1">
@@ -29,8 +54,8 @@ const MatchMaking = (props) => {
 				{ username }
 			</div>
 			<div id="profile1">
-				<img src= "https://toppng.com/uploads/preview/oint-interrogation-point-d-interrogation-115628635697ubaj1toa2.png" alt="opponent" width="40vw" height="40vh" />
-				{ opponent ? opponent : "???" }
+				<img src= {opponentPic} alt="opponent" width="40vw" height="40"/>
+					{ opponent ? opponent : "???" }
 			</div>
 		</div>
 

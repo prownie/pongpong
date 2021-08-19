@@ -1,12 +1,10 @@
 import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-const io = require("../../node_modules/socket.io")
 import { Logger } from '@nestjs/common';
 import { generateRoomId } from './gameGateway.functions';
 
 @WebSocketGateway(3001)
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-
 
   @WebSocketServer() wss: Server;
 
@@ -33,9 +31,18 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       matchtype: string,
       username: string,
     })  {
-    var roomid = generateRoomId(/*io.sockets.adapter.rooms ? io.sockets.adapter.rooms : null*/);
-    console.log('roomid on server:',roomid);
-    client.broadcast.emit('gameToClient', message);
+    //if there is someone in matchmaking for same mod
+
+    var roomid = generateRoomId();
+    client.data.username=message.username;
+    //if noone is found, add to room[matchtype], waiting for someone
+    client.join(message.matchtype);
+    console.log(this.wss.adapter.rooms);
+    // if(io.sockets.client()/*[message.matchtype]*/){
+    //   console.log("rooms exist, wow !");
+    // }
+    console.log('client',client.data.username, 'joined matchmaking for :',message.matchtype);
+    client.emit('inQueue',{ name : "badGuy" });
   }
 
   afterInit(server: any) {

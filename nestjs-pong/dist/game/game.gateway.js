@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
-const io = require("../../node_modules/socket.io");
 const common_1 = require("@nestjs/common");
 const gameGateway_functions_1 = require("./gameGateway.functions");
 let GameGateway = class GameGateway {
@@ -24,8 +23,11 @@ let GameGateway = class GameGateway {
     }
     handleStartMatchmaking(client, message) {
         var roomid = gameGateway_functions_1.generateRoomId();
-        console.log('roomid on server:', roomid);
-        client.broadcast.emit('gameToClient', message);
+        client.data.username = message.username;
+        client.join(message.matchtype);
+        console.log(this.wss.adapter());
+        console.log('client', client.data.username, 'joined matchmaking for :', message.matchtype);
+        client.emit('inQueue', { name: "badGuy" });
     }
     afterInit(server) {
         this.logger.log('Initialized!');

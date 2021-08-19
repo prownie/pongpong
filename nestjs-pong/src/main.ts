@@ -10,20 +10,6 @@ async function bootstrap() {
   const server = require('http').createServer(app);
   const io = require('socket.io')(server);
 
-  const sessionMiddleware = session({
-    secret: 'ft_transcendance',
-    resave: false,
-    saveUninitialized: false,
-  });
-  app.use(sessionMiddleware);
-  io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next);
-  });
-  io.on('connection', (socket) => {
-    const session = socket.request.session;
-    session.connections++;
-    session.save();
-  });
   await app.listen(3000); // Start on port 3000
 }
 bootstrap();

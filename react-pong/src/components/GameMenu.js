@@ -1,12 +1,13 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const GameMenu = () => {
 
 	return (
 		<div id="GameMenu">
-			<a div="start" href="/matchmaking/ranked"><button>Ranked Game</button></a>
-			<a div="start" href="/matchmaking/quickplay"><button>Quick Play</button></a>
-			<a div="start" href="/matchmaking/footpong"><button>Footpong</button></a>
+			<Link to="/matchmaking/ranked"><button>Ranked Game</button></Link>
+			<Link to="/matchmaking/quickplay"><button>Ranked Game</button></Link>
+			<Link to="/matchmaking/footpong"><button>Ranked Game</button></Link>
 			<div className="liveGames">
 			<div className='liveGame1'>Game1</div>
 			<div className='liveGame2'>Game2</div>
