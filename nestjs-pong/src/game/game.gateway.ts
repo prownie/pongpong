@@ -2,27 +2,19 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessa
 import { Socket, Server } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { generateRoomId } from './gameGateway.functions';
+import { ClientRequest } from 'http';
+import { gameData } from '../interfaces/gameData.interface';
 
 @WebSocketGateway(3001)
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-
-  @WebSocketServer() wss: Server;
+  private server: Server;
 
   private logger: Logger = new Logger('GameGateway');
 
   @SubscribeMessage('gameToServer')
   handleMessage(client: Socket,
-    message: {
-      ballx: number,
-      bally: number,
-      speed: number,
-      balldx: number,
-      balldy: number,
-      posRack1: number,
-      posRack2: number,
-      username: string,
-    })  {
-    client.broadcast.emit('gameToClient', message);
+    gameData: gameData){
+    client.broadcast.emit('gameToClient', gameData);
   }
 
   @SubscribeMessage('startMatchmaking')
@@ -36,8 +28,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     var roomid = generateRoomId();
     client.data.username=message.username;
     //if noone is found, add to room[matchtype], waiting for someone
+
+    console.log(this.server.sockets.adapter.rooms.get(message.matchtype));
     client.join(message.matchtype);
-    console.log(this.wss.adapter.rooms);
+    console.log(client.rooms, ' message type :', message.matchtype);
     // if(io.sockets.client()/*[message.matchtype]*/){
     //   console.log("rooms exist, wow !");
     // }
@@ -45,8 +39,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     client.emit('inQueue',{ name : "badGuy" });
   }
 
-  afterInit(server: any) {
-    this.logger.log('Initialized!');
+  afterInit(server: Server) {
+    this.server = server;
   }
 
   handleDisconnect(client: Socket) {

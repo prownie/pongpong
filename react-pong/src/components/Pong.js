@@ -31,9 +31,9 @@ const Pong = () => {
 		// 	transports: ['websocket']
 		// });
 		var gameData = {
-			username: prompt("Enter your username"),
-			direction: -1,
-			dx: 0,
+			username: 'test',//prompt("Enter your username"),
+			direction: 1,
+			dx: 4,
 			dy: 0.00,
 			speed: -2,
 			test: 0,

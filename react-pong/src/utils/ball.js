@@ -15,9 +15,9 @@ if(gd.ready === false) {
   gd.ctx.fillStyle = "blue";
   gd.ctx.globalAlpha = 0.5;
   gd.ctx.fillRect(0,0,gd.width/2,gd.height);
-  gd.ctx.font = "30px Arial";
-  gd.ctx.fillText("Waiting for player",gd.rackWidth*2,gd.height/2);
-  gd.ctx.fillText("Press any key",gd.rackWidth*2,gd.height/2+30);
+  // gd.ctx.font = "30px Arial";
+  // gd.ctx.fillText("Waiting for player",gd.rackWidth*2,gd.height/2);
+  // gd.ctx.fillText("Press any key",gd.rackWidth*2,gd.height/2+30);
   gd.ctx.closePath();
 }
 
@@ -28,9 +28,9 @@ if(gd.ready === false) {
   gd.ctx.fillStyle = "green";
   gd.ctx.globalAlpha = 0.5;
   gd.ctx.fillRect(gd.width/2,0,gd.width/2,gd.height);
-  gd.ctx.font = "30px Arial";
-  gd.ctx.fillText("Waiting for player",gd.rackWidth*2 + gd.width/2,gd.height/2);
-  gd.ctx.fillText("Press any key",gd.rackWidth*2 + gd.width/2,gd.height/2+30);
+  // gd.ctx.font = "30px Arial";
+  // gd.ctx.fillText("Waiting for player",gd.rackWidth*2 + gd.width/2,gd.height/2);
+  // gd.ctx.fillText("Press any key",gd.rackWidth*2 + gd.width/2,gd.height/2+30);
   gd.ctx.closePath();
 }
 

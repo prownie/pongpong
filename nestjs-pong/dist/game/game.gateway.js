@@ -18,19 +18,20 @@ let GameGateway = class GameGateway {
     constructor() {
         this.logger = new common_1.Logger('GameGateway');
     }
-    handleMessage(client, message) {
-        client.broadcast.emit('gameToClient', message);
+    handleMessage(client, gameData) {
+        client.broadcast.emit('gameToClient', gameData);
     }
     handleStartMatchmaking(client, message) {
         var roomid = gameGateway_functions_1.generateRoomId();
         client.data.username = message.username;
+        console.log(this.server.sockets.adapter.rooms.get(message.matchtype));
         client.join(message.matchtype);
-        console.log(this.wss.adapter());
+        console.log(client.rooms, ' message type :', message.matchtype);
         console.log('client', client.data.username, 'joined matchmaking for :', message.matchtype);
         client.emit('inQueue', { name: "badGuy" });
     }
     afterInit(server) {
-        this.logger.log('Initialized!');
+        this.server = server;
     }
     handleDisconnect(client) {
         this.logger.log(`Client disconnected: ${client.id}`);
@@ -39,10 +40,6 @@ let GameGateway = class GameGateway {
         this.logger.log(`Client connected: ${client.id}`);
     }
 };
-__decorate([
-    websockets_1.WebSocketServer(),
-    __metadata("design:type", socket_io_1.Server)
-], GameGateway.prototype, "wss", void 0);
 __decorate([
     websockets_1.SubscribeMessage('gameToServer'),
     __metadata("design:type", Function),
