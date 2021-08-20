@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link, Redirect } from "react-router-dom";
 import { socket } from "../App";
 import Error from "./Error";
 
@@ -21,16 +22,12 @@ const MatchMaking = (props) => {
 	}, [username, props.match.params.matchtype])
 
 	useEffect(() => {
-		if (opponent)
-				setOpponentPic("https://image.shutterstock.com/image-vector/found-grunge-rubber-stamp-on-260nw-197028626.jpg")
-	}, [opponent])
-
-	useEffect(() => {
 		console.log('socket.id=',socket.id);
 	}, [])
 
 	socket.on("opponentFound", (socket) => {
-		setOpponent(socket.name);
+		setOpponentPic("https://image.shutterstock.com/image-vector/found-grunge-rubber-stamp-on-260nw-197028626.jpg")
+		setTimeout(() => setOpponent("found"), 1000);
 	});
 
 	socket.on("inQueue", (socket) => {
@@ -49,6 +46,7 @@ const MatchMaking = (props) => {
 		);}
 	return (
 		<div id="GameMenu">
+			{ opponent ? <Redirect to ='/game' />: null }
 			<div id="profile1">
 				<img src= "https://static-s.aa-cdn.net/img/ios/899287106/45820b5b6bba46c7fcd853a46d554a34?v=1" alt="you" width="40vw" height="40vh"/>
 				{ username }

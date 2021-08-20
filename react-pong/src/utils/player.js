@@ -99,8 +99,8 @@ function checkCollision (gd) {
 		gd.direction *= -1;
   	gd.dx = gd.direction * gd.speed * Math.cos(angleRad);
   	gd.dy = gd.speed * Math.sin(angleRad);
-		if (gd.speed <= 2.0 * gd.vw)
-			gd.speed += 0;
+		if (gd.speed <= 5.0 /** gd.vw*/)
+			gd.speed += 1;
 			sendDataToServ(gd);
 	}
 
@@ -110,8 +110,8 @@ function checkCollision (gd) {
 
 const sendDataToServ = (gd) => {
 	gd.socket.emit('gameToServer', {
-		upArrow: gd.goup,
-		downArrow: gd.godown,
+		upArrow: gd.goup1,
+		downArrow: gd.godown1,
 		ballx: gd.ballx,
 		bally: gd.bally,
 		speed: gd.speed,

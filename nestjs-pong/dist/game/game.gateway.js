@@ -13,25 +13,21 @@ exports.GameGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const common_1 = require("@nestjs/common");
-const gameGateway_functions_1 = require("./gameGateway.functions");
+const socket_service_1 = require("../socket.service");
 let GameGateway = class GameGateway {
-    constructor() {
+    constructor(socketService) {
+        this.socketService = socketService;
         this.logger = new common_1.Logger('GameGateway');
     }
     handleMessage(client, gameData) {
-        client.broadcast.emit('gameToClient', gameData);
+        this.socketService.sendGameData(client, gameData);
     }
     handleStartMatchmaking(client, message) {
-        var roomid = gameGateway_functions_1.generateRoomId();
-        client.data.username = message.username;
-        console.log(this.server.sockets.adapter.rooms.get(message.matchtype));
-        client.join(message.matchtype);
-        console.log(client.rooms, ' message type :', message.matchtype);
-        console.log('client', client.data.username, 'joined matchmaking for :', message.matchtype);
-        client.emit('inQueue', { name: "badGuy" });
+        this.socketService.joinMatchMaking(client, message);
     }
     afterInit(server) {
-        this.server = server;
+        this._server = server;
+        this.socketService.init(this._server);
     }
     handleDisconnect(client) {
         this.logger.log(`Client disconnected: ${client.id}`);
@@ -53,7 +49,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], GameGateway.prototype, "handleStartMatchmaking", null);
 GameGateway = __decorate([
-    websockets_1.WebSocketGateway(3001)
+    websockets_1.WebSocketGateway(3001),
+    __metadata("design:paramtypes", [socket_service_1.SocketService])
 ], GameGateway);
 exports.GameGateway = GameGateway;
 //# sourceMappingURL=game.gateway.js.map

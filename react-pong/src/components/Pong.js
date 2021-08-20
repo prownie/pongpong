@@ -27,15 +27,12 @@ const Pong = () => {
 	useEffect(() => {
 		document.getElementById('scorej1').innerText=score;
 		console.log('score changed');
-		// const socket= io('http://localhost:3001', {
-		// 	transports: ['websocket']
-		// });
 		var gameData = {
 			username: 'test',//prompt("Enter your username"),
 			direction: 1,
 			dx: 4,
 			dy: 0.00,
-			speed: -2,
+			speed: 5,
 			test: 0,
 			vw: vw,
 			vh: vh,
@@ -48,22 +45,23 @@ const Pong = () => {
 			posRack2: canvasHeight / 2 - canvasHeight / 10,
 			rackWidth: canvasWidth / 50,
 			rackHeight: canvasHeight / 5,
-			goup: false,
-			godown: false,
+			goup1: false,
+			godown1: false,
+			goup2: false,
+			godown2: false,
 			ctx: document.getElementById("canvas").getContext('2d'),
 			socket: socket,
 			setScore : blabla,
 			ready: isReady,
 		};
 		socket.on("gameToClient", (socket) => {
-			gameData.goup = socket.upArrow;
-			gameData.godown = socket.downArrow;
+			gameData.goup2 = socket.upArrow;
+			gameData.godown2 = socket.downArrow;
 			gameData.ballx = socket.ballx;
 			gameData.bally = socket.bally;
 			gameData.dx = socket.balldx;
 			gameData.dy = socket.balldy;
-			gameData.posRack1 = socket.posRack1;
-			gameData.posRack2 = socket.posRack2
+			gameData.posRack2 = socket.posRack1;
 		});
 		// if (isReady)
 		ball.animate(gameData)

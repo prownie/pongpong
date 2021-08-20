@@ -4,7 +4,8 @@ export interface gameData {
 		speed: number;
 		balldx: number;
 		balldy: number;
-		posRack1: number;
+		upArrow: boolean;
+		downArrow: boolean;
+		// posRack1: number;
 		posRack2: number;
-		username: string;
 }

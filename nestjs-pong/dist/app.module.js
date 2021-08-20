@@ -9,13 +9,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const game_gateway_1 = require("./game/game.gateway");
+const room_service_1 = require("./room.service");
+const socket_service_1 = require("./socket.service");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     common_1.Module({
         imports: [],
         controllers: [],
-        providers: [game_gateway_1.GameGateway],
+        providers: [game_gateway_1.GameGateway, socket_service_1.SocketService, room_service_1.RoomService],
     })
 ], AppModule);
 exports.AppModule = AppModule;
