@@ -41,12 +41,22 @@ gd.ctx.lineTo(gd.width/2,gd.height);
 gd.ctx.stroke();
 gd.ctx.closePath();
 
-
+if (gd.gameStart === false) {
+  document.onkeydown = (e) => {
+    gd.socket.emit('playerReady');
+    gd.setReady(true);
+    console.log("setting ready");
+  }
+  console.log(gd.ready);
+  // console.log("has returned in ready check, ready=",gd.ready,"gameStart=",gd.gameStart);
+  return;
+}
 drawPlayer.drawPlayer(gd);
 
 
 // gd.ctx.globalAlpha = 1;
 gd.ctx.beginPath();
+
 var radgrad = gd.ctx.createRadialGradient(
   gd.ballx,
   gd.bally,

@@ -64,10 +64,9 @@ export class SocketService {
 	}
 
 	public moveBall(client: Socket, moveBall: moveBall): void {
-		moveBall.ballx += moveBall.balldx;
-		moveBall.bally += moveBall.balldy;
+		moveBall.ballx;
+		moveBall.bally;
 		this._server.to(client.data.gameRoomId).emit('moveBallClient', moveBall);
-		console.log('in move ball');
 		// console.log("before assignation:ballx=",moveBall.ballx,
 		// 	"bally=",moveBall.bally,
 		// 	"balldx=",moveBall.balldx,

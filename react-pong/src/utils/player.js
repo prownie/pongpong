@@ -1,43 +1,31 @@
 function drawPlayer(gd) {
-	if (gd.gameStart === false) {
-		document.onkeydown = (e) => {
-			gd.socket.emit('playerReady');
-			gd.ready = true;
-		}
-		console.log("has returned in ready check, ready=",gd.ready);
-		return;
-	}
 	gd.ctx.globalAlpha = 1;
 
 	document.onkeydown = (e) => {
 		if (e.code === "ArrowUp") {
 			if (!((gd.position === 1 && gd.goup1 === true) || (gd.position === 2 && gd.goup2 === true))) {
 			if (gd.position === 1) gd.goup1 = true; else if (gd.position === 2) gd.goup2 = true;
-			console.log("position =",gd.position);
 			movePadToServ(gd);
 		}}
 		else if (e.code === "ArrowDown") {
 			if (!((gd.position === 1 && gd.godown1 === true) || (gd.position === 2 && gd.godown2 === true))) {
 				if (gd.position === 1) gd.godown1 = true; else if (gd.position === 2) gd.godown2 = true;
-				console.log("position =",gd.position);
 				movePadToServ(gd);
 		}}
 	}
 	document.onkeyup = (e) => {
 		if (e.code === "ArrowUp") {
 			if (gd.position === 1) gd.goup1 = false; else if (gd.position === 2) gd.goup2 = false;
-			console.log("position =",gd.position);
 			movePadToServ(gd);
 		}
 		else if (e.code === "ArrowDown") {
 			if (gd.position === 1) gd.godown1 = false; else if (gd.position === 2) gd.godown2 = false;
-			console.log("position =",gd.position);
 			movePadToServ(gd);}
 	}
-	if (gd.goup1) gd.posRack1 -= 0.8 * gd.vh; if (gd.posRack1 < 0) gd.posRack1 = 0;
-	if (gd.godown1) gd.posRack1 += 0.8 * gd.vh; if (gd.posRack1 + gd.rackHeight >= gd.height) gd.posRack1 = gd.height-gd.rackHeight
-	if (gd.goup2) gd.posRack2 -= 0.8 * gd.vh; if (gd.posRack2 < 0) gd.posRack2 = 0;
-	if (gd.godown2) gd.posRack2 += 0.8 * gd.vh; if (gd.posRack2 + gd.rackHeight >= gd.height) gd.posRack2 = gd.height-gd.rackHeight
+	if (gd.goup1) gd.posRack1 -= 1 * gd.height / 100; if (gd.posRack1 < 0) gd.posRack1 = 0;
+	if (gd.godown1) gd.posRack1 += 1 * gd.height / 100; if (gd.posRack1 + gd.rackHeight >= gd.height) gd.posRack1 = gd.height-gd.rackHeight
+	if (gd.goup2) gd.posRack2 -= 1 * gd.height / 100; if (gd.posRack2 < 0) gd.posRack2 = 0;
+	if (gd.godown2) gd.posRack2 += 1 * gd.height / 100; if (gd.posRack2 + gd.rackHeight >= gd.height) gd.posRack2 = gd.height-gd.rackHeight
 
 	gd.ctx.beginPath();
 	var grad1 = gd.ctx.createLinearGradient(0, gd.posRack1, gd.rackWidth, gd.posRack1 + gd.rackHeight);
@@ -105,39 +93,38 @@ function checkCollision (gd) {
   	gd.balldy = gd.speed * Math.sin(angleRad);
 		if (!(gd.ballx + gd.radius + gd.balldx >= gd.width || gd.ballx - gd.radius - gd.balldx <= 0)) gd.ballx += gd.balldx;
 		if (!(gd.bally + gd.radius + gd.balldy >= gd.height || gd.bally - gd.radius - gd.balldy <= 0)) gd.bally += gd.balldy;
-		if (gd.speed <= 5.0 /** gd.vw*/)
-			gd.speed += 1;
+		if (gd.speed / gd.width <= 1 /** gd.vw*/)
+			gd.speed += 0.1 * gd.width / 100;
 			//only send data ball if needed (correct side)
-		// if ((gd.ballx < gd.width / 2 && gd.position === 1) || (gd.ballx > gd.width/2 && gd.position === 2))
+		if ((gd.ballx < gd.width / 2 && gd.position === 1) || (gd.ballx > gd.width/2 && gd.position === 2))
 		moveBallToServ(gd);
 	}
 
 	//Check where the ball hits the paddle
-	console.log("balldx = ",gd.balldx,"balldy = ",gd.balldy);
 }
 
 const movePadToServ = (gd) => {
 	gd.socket.emit('movePad', {
 		goup1: gd.position === 1 ? gd.goup1 : undefined,
 		godown1: gd.position === 1 ? gd.godown1 : undefined,
-		posRack1: gd.position === 1 ? gd.posRack1 : undefined,
+		posRack1: gd.position === 1 ? gd.posRack1 / gd.height: undefined,
 
 		goup2: gd.position === 2 ? gd.goup2 : undefined,
 		godown2:gd.position === 2 ? gd.godown2 : undefined,
-		posRack2: gd.position === 2 ? gd.posRack2 : undefined,
+		posRack2: gd.position === 2 ? gd.posRack2 / gd.height : undefined,
 
 		position: gd.position,
 	});
 };
 
 const moveBallToServ = (gd) => {
-	console.log("position in moveballtoserv =",gd.position)
+	console.log("speedSent=",gd.speed);
 	gd.socket.emit('moveBall', {
-		ballx: gd.ballx,
-		bally: gd.bally,
+		ballx: gd.ballx / gd.width,
+		bally: gd.bally / gd.height,
 		balldx: gd.balldx,
 		balldy: gd.balldy,
-		speed: gd.speed,
+		speed: gd.speed / gd.width,
 		position: gd.position,
 	});
 };
